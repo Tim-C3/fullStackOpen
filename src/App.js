@@ -1,99 +1,89 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import phonebookService from './services/phonebook'
+import {Form, Search, duplicate} from './components/Phonebook'
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
+  const [search, setSearch] = useState('')
+  const [name, setNewName] = useState('')
+  const [number, setNumber] = useState()
 
   
   /* Use the effect hook to get data from db.json */
   useEffect(() => {
     console.log("Effect");
-    axios
-    .get('http://localhost:3001/persons')
-    .then(response => {
-      console.log(response);
-      setPersons(response.data)
-    })
-  },[])
+    phonebookService
+    .getAll()
+    .then(numbers => setPersons(numbers))
+    },[])
+
+
+
+
+
+
+/* Add back in check for duplicates */
+
+const processName = (event) => {
+  event.preventDefault()
+  const name = event.target[0].value
+  const number = event.target[0].value
+  console.log("In process name component",name);
+    const result =  duplicate(name, persons)
+    console.log("boolean result:", result);
+    result ? alert('Name Taken') : saveName(name, number)
+}
+
+const saveName = (name, number) => {
+    const obj = { name, number } 
+  phonebookService
+  .create(obj)
+  .then(response => {console.log(`Created - name: ${response}`)})
+  .then(setPersons(obj))
   
-  
-const [search, setSearch] = useState('')
-const [name, setNewName] = useState('')
-const [number, setNumber] = useState()
-
-const checkDuplicate = (name) => {
-  var boolean = null;
-  console.log('Name is', name);
-  const exists = persons.filter(person => 
-    JSON.stringify(person.name) === JSON.stringify(name))
-  exists.length > 0 ? boolean = true : boolean = false
-  return boolean;
 }
+const handleSearchChange = event => setSearch(event.target.value)
 
-const ProcessName = (event) => {
-    event.preventDefault()
-    const result =  checkDuplicate(name)
-    result ? alert('Name Taken') : SaveName(name)
+const Reload = () => {
+  console.log("quit")
 }
-
-const SaveName = () => {
-    const obj = {
-    name: name,
-    number: number
-  } 
-  setPersons(persons.concat(obj))
-}
-
-
-const handleInputNameChange = (event) => {setNewName(event.target.value)}
-const handleNumberChange = (event) => setNumber(event.target.value)
-const handleSearchChange = (event) => setSearch(event.target.value)
   
 return(
     <div>
       <h2>Phonebook</h2>
-      <Input text={"Search"} handleChange={handleSearchChange} handleInput={search}/>
+      <Search handleChange={handleSearchChange} handleInput={search}/>
       <h2>Add New</h2>
-      <Form handleNameChange={handleInputNameChange} returning={name}
-            handleNumberChange={handleNumberChange} returningNumber={number}
-            onClick={ProcessName} submitAction={ProcessName}
-      />
+      <Form submit={processName}/>            
      <h2>Numbers</h2>
-     <Persons persons={persons} search={search} />
+     <Persons persons={persons} search={search} setPersons={setPersons} />
      
     </div>    
   )
 }
-
-const Persons = (props) => {
-  return(
-    props.persons.filter(n => n.name.toLowerCase().includes(props.search.toLowerCase())).map(
-      filtered => <p key={filtered.id}>{filtered.name} - {filtered.number}</p>)
-  )
+const handleDelete = (filtered, persons) => {
+  if (window.confirm(`Are you sure you want to delete ${filtered.name}`)) {
+    console.log("delete", persons);
+    phonebookService
+    .remove(filtered.id)
+    persons.map(person => person)
+  }
 
 }
 
-const Input = (props) => {
-  return(
-    <>
-        {props.text} : <input 
-        onChange={props.handleChange}
-        value={props.handleInput}
-        />
-    </>
-  )
-  }
 
-const Form = (props) => {
-return(
-<>
-<form onSubmit={props.submitAction}>
-  <Input text={"Name"} handleChange={props.handleNameChange} handleInput={props.returning} /><br></br>
-  <Input text={"Number"} handleChange={props.handleNumberChange} handleInput={props.returningNumber}/><br></br>
-  <button type='submit' >Add</button> 
-</form>
-</>
-)
-}  
+const Persons = ({persons, search, setPersons}) => {
+  console.log("In persons component", persons,search);
+  return(
+    persons.filter(n => n.name.toLowerCase().includes(search.toLowerCase())).map(
+      filtered => <p key={filtered.id}>{filtered.name} - {filtered.number} <DeleteButton person={filtered.id} handler={() => handleDelete(filtered)} persons={persons} /> </p>)
+  )
+
+}
+const DeleteButton = (props) => {
+  return(
+    <button onClick={props.handler(props.persons)}>Delete</button>
+  )
+}
 
 export default App
