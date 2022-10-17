@@ -14,9 +14,15 @@ const create = newObject => {
   }
 
 const remove = id => {
-    console.log("In delete component")
+    console.log("In delete component", id)
     const request = axios.delete(`${baseUrl}/${id}`)
     return request.then(response => response.data)
 }
-  
-export default {getAll, create, remove}
+const update = ({person}) => {
+    console.log('in update person',person)
+    const updatedPerson = {...person, number: "08e"}
+    const request = axios.put(`${baseUrl}/${person.id}`, updatedPerson)
+    return request.then(response => response.data)
+
+}
+export default {getAll, create, remove,update}

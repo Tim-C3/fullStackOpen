@@ -24,9 +24,9 @@ const Search = (props) => {
   const duplicate = (name, persons) => {
     console.log('In check duplicate component', name);
     const exists = persons.filter(person => 
-      JSON.stringify(person.name) === JSON.stringify(name))
+      person.name == name)
     var boolean = null
-    exists.length !== 1 ? boolean = false : boolean = true    
+    exists.length == 1 ? boolean = true : boolean = false    
     return boolean;
   }
 export {Form, Search, duplicate}
