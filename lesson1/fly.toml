@@ -1,7 +1,6 @@
-# fly.toml file generated for empty-dawn-3627 on 2022-10-19T22:35:15+01:00
+# fly.toml file generated for solitary-moon-1361 on 2022-10-20T10:34:13+01:00
 
-app = "empty-dawn-3627"
-
+app = "solitary-moon-1361"
 kill_signal = "SIGINT"
 kill_timeout = 5
 processes = []
@@ -22,7 +21,6 @@ processes = []
   processes = ["app"]
   protocol = "tcp"
   script_checks = []
-
   [services.concurrency]
     hard_limit = 25
     soft_limit = 20
