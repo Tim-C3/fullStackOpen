@@ -2,8 +2,8 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 app.use(cors())
+app.use(express)
 
-app.use(express())
 let phonebook = [
     { 
       "id": 1,
@@ -27,10 +27,7 @@ let phonebook = [
     }
 ]
 
-app.get('/', (request, response) => {
-    console.log("In get request")
-    response.send('<h2>Thats a server baby</h2>')
-})
+
 
 
 const PORT = process.env.PORT || 3002
