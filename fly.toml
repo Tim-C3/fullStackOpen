@@ -1,6 +1,6 @@
-# fly.toml file generated for timsphoneapp on 2022-10-22T18:07:35+01:00
+# fly.toml file generated for newtimserver on 2022-10-23T11:53:32+01:00
 
-app = "timsphoneapp"
+app = "newtimserver"
 kill_signal = "SIGINT"
 kill_timeout = 5
 processes = []
