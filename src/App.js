@@ -3,6 +3,8 @@ import axios from 'axios'
 import phonebookService from './services/phonebook'
 import {Form, Search, duplicate} from './components/Phonebook'
 
+
+
 const App = () => {
   const [persons, setPersons] = useState([]) 
   const [search, setSearch] = useState('')
@@ -20,15 +22,12 @@ const App = () => {
 
 
 
-
-
-
 /* Add back in check for duplicates */
 
 const processName = (event) => {
   event.preventDefault()
   const name = event.target[0].value
-  const number = event.target[0].value
+  const number = event.target[1].value
   console.log("In process name component",name);
     const result =  duplicate(name, persons)
     console.log("boolean result:", result);
@@ -36,18 +35,23 @@ const processName = (event) => {
 }
 
 const saveName = (name, number) => {
-    const obj = { name, number } 
+    const obj = {name,number} 
   phonebookService
   .create(obj)
   .then(response => {console.log(`Created - name: ${response}`)})
-  .then(setPersons(obj))
-  
+  .then(setPersons(persons.concat(obj)))
+}
+const handleDelete = (filtered) => {
+  if (window.confirm(`Are you sure you want to delete ${filtered.name}`)) {
+    console.log("delete", persons);
+    phonebookService
+    .remove(filtered.id)
+    .then(setPersons(persons.filter(person => person.id !== filtered.id)))
+  }
+
 }
 const handleSearchChange = event => setSearch(event.target.value)
 
-const Reload = () => {
-  console.log("quit")
-}
   
 return(
     <div>
@@ -56,34 +60,22 @@ return(
       <h2>Add New</h2>
       <Form submit={processName}/>            
      <h2>Numbers</h2>
-     <Persons persons={persons} search={search} setPersons={setPersons} />
+     <ul>
+     {search ? persons.filter(n => n.name.toLowerCase().includes(search.toLowerCase())).map(
+      filtered => <li key={filtered.id}>{filtered.name} - {filtered.number} 
+      <button onClick={() => handleDelete(filtered)}>Delete</button> </li>)
+      :
+      persons.map(person => <li key={person.id}>{person.name} - {person.number} 
+        <button onClick={() => handleDelete(person)}>Delete</button> </li>)
+
+      }
+     </ul>
+     
      
     </div>    
   )
 }
-const handleDelete = (filtered, persons) => {
-  if (window.confirm(`Are you sure you want to delete ${filtered.name}`)) {
-    console.log("delete", persons);
-    phonebookService
-    .remove(filtered.id)
-    persons.map(person => person)
-  }
-
-}
 
 
-const Persons = ({persons, search, setPersons}) => {
-  console.log("In persons component", persons,search);
-  return(
-    persons.filter(n => n.name.toLowerCase().includes(search.toLowerCase())).map(
-      filtered => <p key={filtered.id}>{filtered.name} - {filtered.number} <DeleteButton person={filtered.id} handler={() => handleDelete(filtered)} persons={persons} /> </p>)
-  )
-
-}
-const DeleteButton = (props) => {
-  return(
-    <button onClick={props.handler(props.persons)}>Delete</button>
-  )
-}
 
 export default App
