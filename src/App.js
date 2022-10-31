@@ -29,9 +29,39 @@ const processName = (event) => {
   const name = event.target[0].value
   const number = event.target[1].value
   console.log("In process name component",name);
-    const result =  duplicate(name, persons)
-    console.log("boolean result:", result);
-    result ? alert('Name Taken') : saveName(name, number)
+    const results = duplicate(name, persons)
+    console.log("boolean resulst:", results.object);
+    if (results !== null ) {
+      if (window.confirm(`Do want to replace ${name} ?`)) {
+        replace(id)
+      }
+    } {
+      saveName(name,number)
+    }
+
+}
+
+const replace = (number, id) => {
+  console.log("in replace", id);
+  
+  phonebookService
+  .put(number)
+  .then(response => {
+    setPersons(persons.getAll())
+    console.log(response)})
+    
+
+}
+
+const duplicate = (name, persons) => {
+  const results = persons.filter(n => 
+    n.name.toLowerCase().includes(name.toLowerCase()))
+  console.log(results);
+  if (results !== null){
+    console.log("NAME TAKEN")
+    return null
+  } else {return results}
+
 }
 
 const saveName = (name, number) => {

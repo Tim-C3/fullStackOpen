@@ -13,9 +13,16 @@ const create = newObject => {
     return request.then(response => response.data)
   }
 
+
 const remove = id => {
     console.log("In delete component")
     const request = axios.delete(`${baseUrl}/${id}`)
+    return request.then(response => response.data)
+}
+ 
+const put = (newNumber,id) => {
+    console.log("in put",newObject);
+    const request = axios.put(`${baseUrl}/${id}`,newNumber)
     return request.then(response => response.data)
 }
   
