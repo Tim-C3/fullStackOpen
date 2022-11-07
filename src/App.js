@@ -3,8 +3,6 @@ import axios from 'axios'
 import phonebookService from './services/phonebook'
 import {Form, Search, duplicate} from './components/Phonebook'
 
-
-
 const App = () => {
   const [persons, setPersons] = useState([]) 
   const [search, setSearch] = useState('')
@@ -81,8 +79,7 @@ const handleDelete = (filtered) => {
 
 }
 const handleSearchChange = event => setSearch(event.target.value)
-
-  
+ 
 return(
     <div>
       <h2>Phonebook</h2>
@@ -105,7 +102,4 @@ return(
     </div>    
   )
 }
-
-
-
 export default App
