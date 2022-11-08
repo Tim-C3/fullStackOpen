@@ -20,10 +20,10 @@ const remove = id => {
     return request.then(response => response.data)
 } 
  
-const put = (newNumber,id) => {
-    console.log("in put",newObject);
-    const request = axios.put(`${baseUrl}/${id}`,newNumber)
+const put = (person, newNumber) => {
+    console.log("in put", person);
+    const request = axios.put(`${baseUrl}/${person.id}`,person, newNumber)
     return request.then(response => response.data)
 }
   
-export default {getAll, create, remove}
+export default {getAll, create, remove, put}
